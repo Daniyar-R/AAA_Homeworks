@@ -1,7 +1,7 @@
 class CountVectorizer:
     def __init__(self, lowercase=True):
         self.lowercase = lowercase
-        self.tokens = {}
+        self.tokens = []
 
     @staticmethod
     def lower(container_to_lower):
