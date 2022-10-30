@@ -18,27 +18,33 @@ class ColorizeMixin:
         return f'\033[1;{self.repr_color_code};40m {self.title} | {self.price} ₽'
 
 
-class Advert(DynamicAttributes, ColorizeMixin):
+class Advert(ColorizeMixin, DynamicAttributes):
     repr_color_code = 33
 
-    def set_default_price(self, name, value):
+    def set_default_price(self):
         try:
-            getattr(self, name)
+            getattr(self, 'price')
         except AttributeError:
-            setattr(self, name, value)
+            setattr(self, 'price', 0)
 
-        if getattr(self, name) < 0:
+        if getattr(self, 'price') < 0:
             raise ValueError('must be >= 0')
 
     def __init__(self, data):
         if isinstance(data, dict):
             json_data_to_python = data
-
         else:
             json_data_to_python = json.loads(data)
 
         super().__init__(json_data_to_python)
-        self.set_default_price('price', 0)
+        getattr(self, 'title')
+        self.set_default_price()
+
+    def __repr__(self):
+        if issubclass(Advert, ColorizeMixin):
+            return ColorizeMixin.__repr__(self)
+        else:
+            return f'{self.title} | {self.price} ₽'
 
 
 if __name__ == '__main__':
